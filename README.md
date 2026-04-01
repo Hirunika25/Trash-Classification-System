@@ -1,4 +1,4 @@
-# Trash Classification — Deep Learning Project
+# Trash Classification : Deep Learning Project
 
 
 [Recyclable and Household Waste Classification Dataset](https://www.kaggle.com/datasets/alistairking/recyclable-and-household-waste-classification)
