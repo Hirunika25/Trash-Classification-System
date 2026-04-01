@@ -1,0 +1,59 @@
+# ── Data ──────────────────────────────────────
+data:
+  raw_dir: "data/raw/"               #  unzip the Kaggle dataset
+  processed_dir: "data/processed/"   # where prepare_data.py saves merged images
+  splits_csv: "data/splits.csv"      # committed to git — same for everyone
+  seed: 42                           # NEVER change this after first split
+  train_ratio: 0.70
+  val_ratio:   0.15
+  test_ratio:  0.15
+  image_size: 224                    # all models resize to this
+  num_classes: 6                     # Plastic, Paper, Glass, Metal, Organic, Textile
+ 
+# Class label mapping (subfolder name → class index)
+# DO NOT reorder — indices must stay consistent across all members
+classes:
+  Plastic:  0
+  Paper:    1
+  Glass:    2
+  Metal:    3
+  Organic:  4
+  Textile:  5
+ 
+# ── Training (each member can override in their own train.py) ──
+training:
+  batch_size: 32
+  num_epochs: 20
+  num_workers: 2                     # Kaggle notebooks: set to 2
+  early_stopping_patience: 5        # stop if val loss doesn't improve for 5 epochs
+ 
+# ── Optimizer defaults (members can tune these) ──
+optimizer:
+  name: "adamw"
+  lr: 0.0001                         # low LR since we're fine-tuning pretrained weights
+  weight_decay: 0.01
+ 
+# ── Scheduler ──────────────────────────────────
+scheduler:
+  name: "cosine"                     # cosine annealing LR decay
+  min_lr: 0.000001
+ 
+# ── Model checkpoints ──────────────────────────
+checkpoints:
+  save_dir: "models/{member_folder}/checkpoints/"
+  save_best_only: true               # only keep the best val_accuracy checkpoint
+  filename: "best_model.pth"         # standard name so ensemble script knows where to look
+ 
+# ── Ensemble ───────────────────────────────────
+ensemble:
+  strategy: "soft_vote"              # average softmax probabilities across 4 models
+  checkpoint_paths:
+    member_1: "models/member_1_efficientnet/checkpoints/best_model.pth"
+    member_2: "models/member_2_resnet/checkpoints/best_model.pth"
+    member_3: "models/member_3_mobilenet/checkpoints/best_model.pth"
+    member_4: "models/member_4_swint/checkpoints/best_model.pth"
+ 
+# ── Logging ────────────────────────────────────
+logging:
+  use_wandb: false                   # set to true if team sets up Weights & Biases
+  log_every_n_steps: 10
