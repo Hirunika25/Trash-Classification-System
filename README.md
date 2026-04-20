@@ -40,7 +40,7 @@ and combines them into a soft-voting ensemble for robust trash classification.
 ```
 Train : 70%  →  10,500 images   (used for model training)
 Val   : 15%  →   2,250 images   (used for tuning and early stopping)
-Test  : 15%  →   2,250 images   (locked — only used for final ensemble evaluation)
+Test  : 15%  →   2,250 images   (used only the for final ensemble evaluation)
 Seed  : 42
 ```
  
@@ -108,7 +108,7 @@ trash-classifier/
 ### 1. Clone the repo
  
 ```bash
-git clone https://github.com/<your-org>/Trash-Classification-System.git
+git clone https://github.com/Hirunika25/Trash-Classification-System.git
 cd Trash-Classification-System
 ```
  
@@ -120,7 +120,9 @@ pip install -r requirements.txt
 ```
  
 ### 3. Download the dataset 
- 
+
+Dataset: [Recyclable and Household Waste Classification](https://www.kaggle.com/datasets/alistairking/recyclable-and-household-waste-classification)
+
 Download from Kaggle and unzip so the structure is:
 ```
 data/raw/images/Plastic water bottles/default/image1.png
