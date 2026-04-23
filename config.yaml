@@ -70,3 +70,45 @@ logging:
 # EDA
 eda:
   plots_dir: "notebooks/eda/"
+
+# Keyword → main class mapping 
+keyword_to_class:
+
+# Plastic (9 sub-categories)
+  plastic: Plastic
+  bag: Plastic
+  straw: Plastic
+  cup lid: Plastic
+  cutlery: Plastic
+  container: Plastic
+  styrofoam: Plastic
+ 
+# Paper (5 sub-categories)
+  newspaper: Paper
+  office_paper: Paper
+  office paper: Paper
+  magazine: Paper
+  cardboard: Paper
+  paper_cup: Paper
+
+# Glass (3 sub-categories)
+  glass: Glass
+
+# Metal (4 sub-categories)
+  aluminum: Metal
+  steel: Metal
+  aerosol: Metal
+  metal: Metal
+
+# Organic (5 sub-categories)
+  food waste: Organic
+  food_waste: Organic
+  eggshell: Organic
+  coffee: Organic
+  tea bag: Organic
+  fruit: Organic
+  vegetable: Organic
+
+# Textile (2 sub-categories)
+  clothing: Textile
+  shoe: Textile
