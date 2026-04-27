@@ -65,12 +65,13 @@ trash-classifier/
 │
 ├── notebooks/
 │   ├── eda/
-│   │   ├── eda.ipynb                      
-│   │   ├── class_distribution.png
-│   │   ├── subcategory_distribution.png
-│   │   ├── default_vs_realworld.png
-│   │   ├── sample_grid.png
-│   │   └── pixel_stats.png
+│   │   ├── eda.ipynb 
+|   |   |──plots                    
+│   │     ├── class_distribution.png
+│   │     ├── subcategory_distribution.png
+│   │     ├── default_vs_realworld.png
+│   │     ├── sample_grid.png
+│   │     └── pixel_stats.png
 │   └── preprocessing.ipynb               # runs this once → generates splits.csv
 │
 ├── models/
