@@ -8,7 +8,8 @@
 torch>=2.1.0
 torchvision>=0.16.0
 torchaudio>=2.1.0 
-timm>=0.9.12 
+timm>=0.9.12
+tensorflow
 numpy>=1.24.0
 pandas>=2.0.0              
 Pillow>=10.0.0             
