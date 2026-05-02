@@ -4,6 +4,8 @@
 [Recyclable and Household Waste Classification Dataset](https://www.kaggle.com/datasets/alistairking/recyclable-and-household-waste-classification)
 and combines them into a soft-voting ensemble for robust trash classification.
 
+- Google drive link : (https://drive.google.com/drive/folders/1_XVDZH1qiQtMfTnFCTyWEA9VV5gjdTUs?usp=sharing)
+
 ---
 
 ## Team & Model Ownership
