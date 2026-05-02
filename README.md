@@ -3,8 +3,6 @@
 A deep learning project that classifies waste images into 6 categories using MobileNetV3-Large trained on the :
 [Recyclable and Household Waste Classification Dataset](https://www.kaggle.com/datasets/alistairking/recyclable-and-household-waste-classification)
 
-- Google drive link : (https://drive.google.com/drive/folders/1_XVDZH1qiQtMfTnFCTyWEA9VV5gjdTUs?usp=sharing)
-
 ---
 
 
