@@ -141,7 +141,7 @@ models/checkpoints/best_model.pth
 ### 6.Run inference on a single image
 
 ```bash
-ppython predict.py --image test_images/test1.jpg
+python predict.py --image test_images/test1.jpg
 ```
 ### 7. Run the Gradio demo
 
