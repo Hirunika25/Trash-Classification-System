@@ -1,21 +1,10 @@
-# Trash Classification : Ensemble Deep Learning Project
+# Trash Classification : MobileNetV3-Large 
 
-
+A deep learning project that classifies waste images into 6 categories using MobileNetV3-Large trained on the :
 [Recyclable and Household Waste Classification Dataset](https://www.kaggle.com/datasets/alistairking/recyclable-and-household-waste-classification)
-and combines them into a soft-voting ensemble for robust trash classification.
 
 ---
 
-## Team & Model Ownership
-
-| Member | Model | 
-|--------|-------|
-| Member 1 | EfficientNet-B3 |
-| Member 2 | ResNet-50 | 
-| Member 3 | MobileNetV3-Large | 
-| Member 4 | Swin-T | 
-
----
 
 ## Dataset
 
@@ -40,7 +29,7 @@ and combines them into a soft-voting ensemble for robust trash classification.
 ```
 Train : 70%  →  10,500 images   (used for model training)
 Val   : 15%  →   2,250 images   (used for tuning and early stopping)
-Test  : 15%  →   2,250 images   (locked — only used for final ensemble evaluation)
+Test  : 15%  →   2,250 images   (used only the for final ensemble evaluation)
 Seed  : 42
 ```
  
@@ -48,240 +37,167 @@ Split is stratified — every class gets the exact same 70/15/15 ratio.
  
 ---
  
+
 ## Project Structure
- 
+
 ```
-trash-classifier/
+trash-classification-system/
 │
 ├── data/
 │   ├── raw/
-│   │   └── images/                        # unzip Kaggle dataset here (gitignored)
+│   │   └── images/                        # unzip Kaggle dataset here 
 │   │       ├── Plastic water bottles/
 │   │       │   ├── default/     *.png
 │   │       │   └── real_world/  *.png
 │   │       └── ...  (30+ sub-category folders)
 │   ├── processed/
-│   └── splits.csv                         # same for everyone
+│   └── splits.csv                         
 │
 ├── notebooks/
 │   ├── eda/
-│   │   ├── eda.ipynb                      
-│   │   ├── class_distribution.png
-│   │   ├── subcategory_distribution.png
-│   │   ├── default_vs_realworld.png
-│   │   ├── sample_grid.png
-│   │   └── pixel_stats.png
-│   └── preprocessing.ipynb               # runs this once → generates splits.csv
+│   │   ├── eda.ipynb
+│   │   └── plots/
+│   └── preprocessing.ipynb   # runs this once → generates splits.csv
 │
 ├── models/
-│   ├── member_1_efficientnet/
-│   │   ├── train.py
-│   │   ├── model.py
-│   │   └── checkpoints/                  # best_model.pth (gitignored)
-│   ├── member_2_resnet/
-│   │   ├── train.py
-│   │   ├── model.py
-│   │   └── checkpoints/
-│   ├── member_3_mobilenet/
-│   │   ├── train.py
-│   │   ├── model.py
-│   │   └── checkpoints/
-│   └── member_4_swint/
-│       ├── train.py
-│       ├── model.py
-│       └── checkpoints/
+│   ├── checkpoints/
+│   │   └── best_model.pth         # Download from Google drive
+│   ├── demo_samples/              # place sample images here for the demo
+│   ├── mobilenetV3.ipynb          # training notebook (Kaggle)
+│   ├── demo.ipynb                 # Gradio demo notebook
+│   ├── training_history.png
+│   └── confusion_matrix.png
 │
-├── ensemble/
-│   ├── ensemble.py                        # loads 4 checkpoints · soft voting
-│   └── evaluate.py                        # metrics · confusion matrix
-│
-├── config.yaml                            
-├── requirements.txt                       
+├── predict.py                     # single image inference script
+├── config.yaml
+├── requirements.txt
 ├── .gitignore
 └── README.md
-```
- 
+``` 
+[Download model checkpoint from google drive](https://drive.google.com/drive/folders/1_XVDZH1qiQtMfTnFCTyWEA9VV5gjdTUs?usp=sharing)
+
 ---
- 
+
+### Training strategy
+
+- **Stage 1 (epochs 1–10):** Backbone frozen, head trained only — LR=1e-3
+- **Stage 2 (epochs 11–20):** Top backbone blocks unfrozen, fine-tuned — LR=1e-5
+- **Scheduler:** Cosine annealing
+- **Imbalance handling:** WeightedRandomSampler + weighted CrossEntropyLoss
+- **Platform:** Kaggle T4 GPU with AMP mixed precision
+
+---
+
+## Results
+
+| Metric | Value |
+|--------|-------|
+| Val Accuracy | ~85% |
+| Test Loss | — |
+| Training platform | Kaggle T4 GPU |
+| Total epochs | 20 (10 Stage 1 + 10 Stage 2) |
+
+### Per-class performance (test set)
+
+| Class | Correct | Total | Recall |
+|-------|---------|-------|--------|
+| Plastic | 728 | 975 | 74.7% |
+| Paper | 411 | 450 | 91.3% |
+| Glass | 141 | 150 | 94.0% |
+| Metal | 288 | 300 | 96.0% |
+| Organic | 218 | 225 | 96.9% |
+| Textile | 144 | 150 | 96.0% |
+
+**Key finding:** Plastic has the lowest recall (74.7%) due to its 9 visually diverse
+sub-categories. All other classes exceed 91% recall.
+
+---
+
+
 ## Quickstart
  
-### 1. Clone the repo
+### 1. Clone the repo and install dependencies
  
 ```bash
-git clone https://github.com/<your-org>/Trash-Classification-System.git
+git clone https://github.com/Hirunika25/Trash-Classification-System.git
 cd Trash-Classification-System
-```
- 
-### 2. Install dependencies
- 
-```bash
 pip install -r requirements.txt
+```
+ 
+### 2. Download the dataset and place it in the necessary folder
+ 
+### 3. Run EDA 
+file: notebooks/eda.ipynb
 
-```
- 
-### 3. Download the dataset 
- 
-Download from Kaggle and unzip so the structure is:
-```
-data/raw/images/Plastic water bottles/default/image1.png
-data/raw/images/Plastic water bottles/real_world/image1.png
-...
-```
- 
-### 4. Run EDA 
- 
-Open `notebooks/eda/eda.ipynb` and run all cells.
- 
-Check console output — must say **"All sub-categories mapped successfully"** with no Unknown warnings.
-Share the 5 plots in `notebooks/eda/` with the team before proceeding.
- 
-### 5. Run preprocessing ( run once by one member)
+### 4. Run preprocessing 
+file : notebooks/preprocessing.ipynb
 
- Get the splits by others;
-```bash
-git add data/splits.csv
-git commit -m "add splits.csv  seed=42  70/15/15"
-git push
+### 5. Train the model and Get the checkpoint
+file : models/mobilenetV3.ipynb
+get the `best_model.pth` from the shared Google Drive folder and place at:
 ```
- 
-### 6. Pull the split (Members 2, 3, 4)
- 
-```bash
-git pull
+models/checkpoints/best_model.pth
 ```
- 
-Everyone now has the identical split. Nobody runs preprocessing again.
- 
-### 7. Train your model on Kaggle (each member independently)
- 
+### 6.Run inference on a single image
 
- 
-### 8. Share your checkpoint
- 
-After training, download `best_model.pth`.
-Upload to the team's shared Google Drive folder.
-Name it clearly: `member1_efficientnet.pth`, `member2_resnet.pth` etc.
- 
-### 9. Run the ensemble 
- 
-1. Download all 4 `.pth` files from Drive
-2. Place each at the path in `config.yaml` → `ensemble.checkpoint_paths`
-3. Run:
- 
 ```bash
-python ensemble/ensemble.py
-python ensemble/evaluate.py
+python predict.py --image test_images/test1.jpg
 ```
- 
----
- 
-## Configuration (`config.yaml`)
- 
-All shared settings live in one file. Load it in any script:
- 
-```python
-import yaml
-with open("config.yaml") as f:
-    cfg = yaml.safe_load(f)
+### 7. Run the Gradio demo
+
+```bash
+pip install gradio>=4.0.0
+jupyter notebook models/demo.ipynb
 ```
- 
-### Settings that must never change after first run
- 
+
+
+ ---
+
+## Configuration
+
+All shared settings in `config.yaml`. Key values that must never change:
+
 | Key | Value | Reason |
 |-----|-------|--------|
 | `data.seed` | 42 | Changing breaks split reproducibility |
-| `data.num_classes` | 6 | Changing invalidates all checkpoints |
-| `classes` mapping | see config | Indices must match across all 4 models |
-| `data.image_size` | 224 | Changing invalidates all checkpoints |
- 
-### Settings members can tune (open a PR)
- 
-`training.lr` · `training.batch_size` · `training.num_epochs` · `optimizer.weight_decay`
- 
----
- 
-## Model Checkpoints
- 
-A checkpoint (`best_model.pth`) is a saved snapshot of a model's learned weights
-at the epoch with the best validation accuracy.
- 
-- Checkpoints are **gitignored** — they are 50–200 MB each, too large for GitHub
-- Share via the team **Google Drive folder**
-- Always name it `best_model.pth` so the ensemble script finds it automatically
-- Place it at the exact path listed in `config.yaml` under `ensemble.checkpoint_paths`
-- If you retrain and improve, just overwrite and re-upload to Drive
- 
----
- 
-## Ensemble Strategy
- 
-Each model outputs a softmax probability vector of shape `[6]`.
-The ensemble averages all 4 vectors and takes the highest probability class:
- 
-```
-Final class = argmax( (p1 + p2 + p3 + p4) / 4 )
-```
- 
-This is **soft voting** — it considers prediction confidence, not just the winning class,
-which consistently outperforms hard (majority) voting.
- 
----
- 
-## Results
- 
-*Fill in after training is complete.*
- 
-| Model | Val Accuracy | Val F1 | Test Accuracy |
-|-------|-------------|--------|---------------|
-| EfficientNet-B3 (Member 1) | — | — | — |
-| ResNet-50 (Member 2) | — | — | — |
-| MobileNetV3-Large (Member 3) | — | — | — |
-| Swin-T (Member 4) | — | — | — |
-| **Ensemble (soft vote)** | **—** | **—** | **—** |
- 
----
- 
-## Git Workflow
- 
+| `data.num_classes` | 6 | Changing invalidates checkpoint |
+| `classes` mapping | see config | Indices must match checkpoint |
+| `data.image_size` | 224 | Changing invalidates checkpoint |
 
-```
- 
-- Never commit directly to `main` — always open a pull request
-- Never commit `data/raw/`, `data/processed/`, or `*.pth` files
-- Always commit `data/splits.csv` after Member 1 generates it
-- Commit `config.yaml` changes separately with a clear message
- 
 ---
- 
-## Known Dataset Notes
- 
-- The raw dataset contains 30+ sub-category folders with varied naming conventions
-  (some use underscores e.g. `food_waste`, `office_paper`)
-- All sub-categories are mapped to 6 main classes via keyword matching in both
-  `eda.ipynb` and `preprocessing.ipynb` — keep `KEYWORD_TO_CLASS` in sync across both files
-- `paper_cups` is mapped to **Paper** (not Plastic)
-- `styrofoam_cups` is mapped to **Plastic**
- 
+
+## Checkpoints
+
+`best_model.pth` contains:
+
+```python
+{
+    "epoch"       : int,    # epoch with best val accuracy
+    "val_acc"     : float,  # best validation accuracy
+    "model_state" : dict,   # all learned weights
+    "model_name"  : str,    # "mobilenetv3_large_100"
+    "num_classes" : int,    # 6
+}
+
+
 ---
- 
+
 ## Dependencies
- 
-See `requirements.txt`. Core libraries:
- 
+
 | Library | Purpose |
 |---------|---------|
-| `torch` + `torchvision` | Model training |
-| `timm` | Pretrained model zoo — all 4 models in one library |
+| `torch` + `torchvision` | Model training and transforms |
+| `timm` | MobileNetV3-Large pretrained weights |
 | `pandas` | splits.csv handling |
-| `scikit-learn` | Stratified split · metrics · confusion matrix |
-| `PyYAML` | Loading config.yaml |
-| `matplotlib` + `seaborn` | EDA plots |
+| `scikit-learn` | Class weights · metrics · confusion matrix |
+| `PyYAML` | config.yaml loading |
+| `matplotlib` + `seaborn` | Training plots |
 | `Pillow` | Image loading |
-| `gradio` | Demo app — uncomment in requirements.txt when ready |
- 
+| `gradio` | Demo UI — `pip install gradio>=4.0.0` |
+
 ---
- 
+
 ## License
- 
+
 Dataset: MIT License — Alistair King
 ([kaggle.com/datasets/alistairking/recyclable-and-household-waste-classification](https://www.kaggle.com/datasets/alistairking/recyclable-and-household-waste-classification))

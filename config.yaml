@@ -1,10 +1,13 @@
 # ─────────────────────────────────────────────
-#  when to change this file:
+# Trash Classifier — Shared Project Config
+# ─────────────────────────────────────────────
 #
-#  update checkpoint_paths if folder names change
-#  Any member: update lr/batch_size only after testing, via PR
-#  Never change: seed, num_classes, classes mapping, image_size
-#  Optional later: add "augmentation" block per model if needed
+# When to change this file:
+#   - update checkpoint_paths if folder names change
+#   - update lr/batch_size only after testing, via PR
+#   Never change: seed, num_classes, classes mapping, image_size
+#   Never change: keyword_to_class after splits.csv is committed
+#
 # ─────────────────────────────────────────────
 
 # Data 
@@ -29,6 +32,47 @@ classes:
   Organic:  4
   Textile:  5
  
+ # ── Keyword → main class mapping ──────────────
+# Used by both eda.ipynb and preprocessing.ipynb
+keyword_to_class:
+  # Plastic
+  plastic:       "Plastic"
+  bag:           "Plastic"
+  straw:         "Plastic"
+  cup_lid:       "Plastic"
+  "cup lid":     "Plastic"
+  cutlery:       "Plastic"
+  container:     "Plastic"
+  styrofoam:     "Plastic"
+  # Paper
+  newspaper:     "Paper"
+  office_paper:  "Paper"
+  "office paper": "Paper"
+  magazine:      "Paper"
+  cardboard:     "Paper"
+  paper_cup:     "Paper"
+  "paper cup":   "Paper"
+  # Glass
+  glass:         "Glass"
+  # Metal
+  aluminum:      "Metal"
+  steel:         "Metal"
+  aerosol:       "Metal"
+  metal:         "Metal"
+  # Organic
+  food_waste:    "Organic"
+  "food waste":  "Organic"
+  eggshell:      "Organic"
+  coffee:        "Organic"
+  tea_bag:       "Organic"
+  "tea bag":     "Organic"
+  fruit:         "Organic"
+  vegetable:     "Organic"
+  # Textile
+  clothing:      "Textile"
+  shoe:          "Textile"
+
+
 # Training (each member can override in their own train.py) ──
 training:
   batch_size: 32
@@ -47,6 +91,11 @@ scheduler:
   name: "cosine"                     # cosine annealing LR decay
   min_lr: 0.000001
  
+# Class imbalance handling 
+imbalance:
+  strategy: "class_weights"          # weighted CrossEntropyLoss
+  use_sampler: true                  # WeightedRandomSampler in DataLoader
+
 # Model checkpoints 
 checkpoints:
   save_dir: "models/{member_folder}/checkpoints/"
@@ -70,3 +119,4 @@ logging:
 # EDA
 eda:
   plots_dir: "notebooks/eda/"
+

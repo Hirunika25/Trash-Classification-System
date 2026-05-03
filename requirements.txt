@@ -8,7 +8,8 @@
 torch>=2.1.0
 torchvision>=0.16.0
 torchaudio>=2.1.0 
-timm>=0.9.12 
+timm>=0.9.12
+tensorflow
 numpy>=1.24.0
 pandas>=2.0.0              
 Pillow>=10.0.0             
@@ -18,5 +19,5 @@ matplotlib>=3.7.0
 seaborn>=0.12.0 
 tqdm>=4.65.0               # progress bars during training  
 # wandb>=0.16.0            # uncomment if team decides to use Weights & Biases
-# gradio>=4.0.0            # uncomment (ensemble + demo) when building the demo
+gradio>=4.0.0            # when building the demo
  
