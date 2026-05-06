@@ -170,14 +170,14 @@ All shared settings in `config.yaml`. Key values that must never change:
 
 `best_model.pth` contains:
 
-```bash
-{
-    "epoch"       : int,    # epoch with best val accuracy
-    "val_acc"     : float,  # best validation accuracy
-    "model_state" : dict,   # all learned weights
-    "model_name"  : str,    # "mobilenetv3_large_100"
-    "num_classes" : int,    # 6
-}
+
+
+"epoch"       : int,    # epoch with best val accuracy
+"val_acc"     : float,  # best validation accuracy
+"model_state" : dict,   # all learned weights
+"model_name"  : str,    # "mobilenetv3_large_100"
+"num_classes" : int,    # 6
+
 
 
 ---
