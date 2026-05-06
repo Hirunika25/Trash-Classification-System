@@ -170,7 +170,7 @@ All shared settings in `config.yaml`. Key values that must never change:
 
 `best_model.pth` contains:
 
-```python
+```bash
 {
     "epoch"       : int,    # epoch with best val accuracy
     "val_acc"     : float,  # best validation accuracy
