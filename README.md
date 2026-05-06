@@ -170,7 +170,7 @@ All shared settings in `config.yaml`. Key values that must never change:
 
 `best_model.pth` contains:
 
-
+```
 
 "epoch"       : int,    # epoch with best val accuracy
 "val_acc"     : float,  # best validation accuracy
@@ -179,7 +179,7 @@ All shared settings in `config.yaml`. Key values that must never change:
 "num_classes" : int,    # 6
 
 
-
+```
 ---
 
 ## Dependencies
