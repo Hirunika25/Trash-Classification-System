@@ -168,9 +168,9 @@ All shared settings in `config.yaml`. Key values that must never change:
 
 ## Checkpoints
 
-`best_model.pth` is gitignored (too large for GitHub). It contains:
+`best_model.pth` contains:
 
-```python
+```bash
 {
     "epoch"       : int,    # epoch with best val accuracy
     "val_acc"     : float,  # best validation accuracy
@@ -178,9 +178,7 @@ All shared settings in `config.yaml`. Key values that must never change:
     "model_name"  : str,    # "mobilenetv3_large_100"
     "num_classes" : int,    # 6
 }
-```
 
-Shared via Google Drive — link in group chat.
 
 ---
 
